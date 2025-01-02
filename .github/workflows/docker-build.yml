@@ -48,7 +48,7 @@ jobs:
 
       - name: "Build Docker Image"
         id: build-image
-        uses: draftm0de/os.proxy/.github/actions/docker-build@main
+        uses: draftm0de/scripts.github/.github/actions/docker-build@main
         with:
           image: ${{ inputs.image }}
           target: ${{ inputs.target }}

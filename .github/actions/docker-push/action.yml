@@ -20,7 +20,7 @@ runs:
     - name: "Load Docker Image From Artifact"
       id: load-image
       if: ${{ inputs.artifact }}
-      uses: draftm0de/os.proxy/.github/actions/artifact-to-image@main
+      uses: draftm0de/scripts.github/.github/actions/artifact-to-image@main
       with:
         artifact: ${{ inputs.artifact }}
 
