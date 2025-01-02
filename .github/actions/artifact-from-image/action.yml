@@ -1,0 +1,58 @@
+name: "Save Docker Image To Artifact"
+description: "Save docker image to a artifact"
+inputs:
+  image:
+    description: "Docker image name (without tag, default: latest)"
+    required: true
+outputs:
+  artifact:
+    description: "Docker image artifact reference"
+    value: ${{ steps.arguments.outputs.artifact_name }}/${{ steps.arguments.outputs.artifact_path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Prepare Docker Image Upload"
+      shell: bash
+      id: arguments
+      run: |
+        echo "::group::Preparing docker image upload"
+        image="${{ inputs.image }}"
+        if [[ "${image}" == *":"* ]]; then
+          image_name="${image%%:*}"
+          image_tag="${image#*:}"
+        else
+          image_name="${image}"
+          image_tag="latest"        
+        fi 
+        
+        artifact_name=$(echo "${image_name}" | tr '/.' '-')
+        artifact_name="${artifact_name}-${image_tag}"
+        artifact_path="image.tar"      
+        echo "> artifact name: $artifact_name"     
+        echo "> artifact path: $artifact_path"
+        
+        echo "::endgroup::"        
+        echo "artifact_name=$artifact_name" >> $GITHUB_OUTPUT        
+        echo "artifact_path=$artifact_path" >> $GITHUB_OUTPUT                
+
+    - name: "Save Docker Image"
+      shell: bash
+      run: |
+        echo "::group::Saving Docker Image"
+        
+        image="${{ inputs.image }}"   
+        file="${{ steps.arguments.outputs.artifact_path }}" 
+        docker save -o $file $image
+        echo "> image: $image"
+        echo "> file: $file"
+        
+        echo "::endgroup::"      
+
+    - name: "Upload Docker Image"
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.arguments.outputs.artifact_name }}
+        path: ${{ steps.arguments.outputs.artifact_path }}
+        if-no-files-found: error
+

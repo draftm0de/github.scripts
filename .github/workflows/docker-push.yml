@@ -1,0 +1,49 @@
+name: Docker Push Image
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: "Source docker image name"
+        required: false
+        type: string
+      artifact:
+        description: "Artifact name to load docker source image from"
+        required: false
+        type: string
+      target:
+        description: "Target docker image name (not given: identically to source)"
+        required: false
+        type: string
+    secrets:
+      DOCKER_TOKEN:
+        required: true
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Prepare Push Arguments"
+        shell: bash
+        run: |
+          echo "::group::Preparing push arguments"
+          
+          if [ -n "${{ inputs.image }}" ]; then
+            echo "> push from image"
+          elif [ -n "${{ inputs.artifact }}" ]; then
+            echo "> push from artifact"
+          else
+            echo "::error::Neither artifact nor image argument was provided"
+            exit 1          
+          fi
+          
+          echo "::endgroup::"
+
+      - name: "Push Docker Image"
+        uses: draftm0de/os.proxy/.github/actions/docker-push@main
+        with:
+          image: ${{ inputs.image }}
+          artifact: ${{ inputs.artifact }}
+          target: ${{ inputs.target }}
+          secret-docker-token: ${{ secrets.DOCKER_TOKEN }}
+          

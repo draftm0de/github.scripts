@@ -1,0 +1,53 @@
+name: "Load Docker Image From Artifact"
+description: "Load Docker Image From"
+inputs:
+  artifact:
+    description: "Full qualified artifact file (includes leading artifact-path)"
+    required: true
+outputs:
+  image:
+    description: "Docker image name"
+    value: ${{ steps.load-image.outputs.image }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Prepare Docker Image Download"
+      shell: bash
+      id: arguments
+      run: |
+        echo "::group::Preparing docker image download"
+        artifact="${{ inputs.artifact }}"
+        if [[ "${artifact}" == *"/"* ]]; then
+          artifact_name="${artifact%%/*}"
+          artifact_file="${artifact#*/}"
+        else
+          echo "::error:: given artifact invalid"
+          exit 1        
+        fi 
+              
+        echo "> artifact name: $artifact_name"     
+        echo "> artifact file: $artifact_file"
+        
+        echo "::endgroup::"        
+        echo "artifact_name=$artifact_name" >> $GITHUB_OUTPUT        
+        echo "artifact_file=$artifact_file" >> $GITHUB_OUTPUT
+
+    - name: "Download Docker Image"
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ steps.arguments.outputs.artifact_name }}
+        path: .artifact
+
+    - name: "Load Docker Image"
+      shell: bash
+      id: load-image
+      run: |
+        echo "::group::Loading Docker Image"
+          
+        file=".artifact/${{ steps.arguments.outputs.artifact_file }}" 
+        image=$(docker load --input ${file} | grep 'Loaded image:' | awk '{print $3}')
+        echo "> loaded image: $image" 
+        
+        echo "::endgroup::"
+        echo "image=$image" >> $GITHUB_OUTPUT

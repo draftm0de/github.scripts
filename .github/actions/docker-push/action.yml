@@ -1,0 +1,96 @@
+name: "Push Docker Image"
+description: "Push Docker Image"
+inputs:
+  image:
+    description: "Docker image name"
+    required: false
+  artifact:
+    description: "Load image from artifact"
+    required: false
+  target:
+    description: "Target docker image name"
+    required: false
+  secret-docker-token:
+    description: "Docker API Token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Load Docker Image From Artifact"
+      id: load-image
+      if: ${{ inputs.artifact }}
+      uses: draftm0de/os.proxy/.github/actions/artifact-to-image@main
+      with:
+        artifact: ${{ inputs.artifact }}
+
+    - name: "Prepare Push Arguments"
+      id: arguments
+      shell: bash
+      run: |
+        echo "::group::Preparing docker push arguments"
+        
+        from_image="${{ inputs.image }}"
+        from_artifact="${{ inputs.artifact }}"
+        
+        # verifiy input arguments
+        if [ -n "${from_artifact}" ]; then
+          image_loaded="${{ steps.load-image.outputs.image }}"
+          if [ -n "${image_loaded}" ]; then
+            image="${image_loaded}"
+            echo "> image: $image (used from artifact)" 
+          else
+            echo "::error::Could not download image from given artifact"
+            exit 1
+          fi
+        elif [ -n "${from_image}" ]; then
+          image="${from_image}"
+          echo "> image: $image (used from given argument.image)"
+        else
+          echo "::error::Neither artifact nor image argument was provided"
+          exit 1
+        fi
+        
+        # verify image accessibility 
+        if docker inspect --type=image "${image}" > /dev/null 2>&1; then
+          echo "> image: $image is accessible"
+        else
+          echo "::error::image $image is not accessible, does not exist"
+          exit 1
+        fi
+        
+        # extract docker-username
+        docker_username="${image%%/*}"
+        if [ "${image}" = "${docker_username}" ]; then
+          echo "::error::Could not extract docker-username from $image"
+          exit 1
+        else
+          echo "> docker-username: $docker_username"
+        fi 
+        
+        echo "::endgroup::"
+        echo "image=$image" >> $GITHUB_OUTPUT
+        echo "docker_username=$docker_username" >> $GITHUB_OUTPUT
+
+    - name: "Login To Docker Hub"
+      uses: docker/login-action@v3
+      with:
+        username: ${{ steps.arguments.outputs.docker_username }}
+        password: ${{ inputs.secret-docker-token }}
+
+    - name: "Push Docker Image"
+      shell: bash
+      run: |
+        echo "::group::Pushing docker image"
+        
+        image="${{ steps.arguments.outputs.image }}"       
+        if [ -n "${{ inputs.target }}" ]; then
+          tag="${{ inputs.target }}"
+          docker tag ${image} ${tag}
+          echo "> built image $image tagged with: $tag"
+          image="${tag}"        
+        fi
+        echo ">push: $image"
+        docker push $image
+        
+        echo "::endgroup::"

@@ -1,0 +1,58 @@
+name: Docker Build Image
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: "Docker image name (without tag, default: latest)"
+        required: true
+        type: string
+      target:
+        description: "Build --target option"
+        required: false
+        type: string
+      context:
+        description: "Build context (default: .)"
+        required: false
+        default: "."
+        type: string
+      options:
+        description: "Additional build options"
+        required: false
+        type: string
+      build-args-file:
+        description: "--build-args from file"
+        required: false
+        type: string
+      reproducible:
+        description: "Build reproducible image"
+        required: false
+        type: string
+    outputs:
+      artifact:
+        description: "Docker built image artifact name"
+        value: ${{ jobs.build.outputs.artifact }}
+      digest:
+        description: "Docker built image digest"
+        value: ${{ jobs.build.outputs.digest }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ steps.build-image.outputs.artifact }}
+      digest: ${{ steps.build-image.outputs.digest }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "Build Docker Image"
+        id: build-image
+        uses: draftm0de/os.proxy/.github/actions/docker-build@main
+        with:
+          image: ${{ inputs.image }}
+          target: ${{ inputs.target }}
+          context: ${{ inputs.context }}
+          options: ${{ inputs.options }}
+          build_args_file: ${{ inputs.build-args-file }}
+          reproducible: ${{ inputs.reproducible }}
