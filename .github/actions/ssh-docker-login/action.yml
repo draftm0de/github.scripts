@@ -1,0 +1,91 @@
+name: "SSH Docker Login"
+description: "SSH Docker Login"
+inputs:
+  remote_ssh_chain:
+    description: "Remote ssh chain to remote server"
+    required: true
+  remote_path:
+    description: "Remote: root path"
+    required: true
+  docker_username:
+    description: "Docker login: username"
+    required: true
+  docker_token:
+    description: "Docker login: token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Set Up Docker Login"
+      id: prepare
+      shell: bash
+      run: |
+        echo "::group::Preparing docker login..."
+        
+        remote_path="${{ inputs.remote_path }}"
+        remote_ssh_chain="${{ inputs.remote_ssh_chain }}"
+        
+        # create local token file
+        local_token_path="${HOME}/.docker"
+        local_token_file="${local_token_path}/token"
+        mkdir -p ${local_token_path}      
+        echo "${{ inputs.docker_token }}" > "${local_token_file}"
+        echo "✅ stored token to local file"
+        
+        remote_token_file="${remote_path}/.secrets/token"
+        remote_token_path=$(dirname "$remote_token_file")
+        # create remote path
+        ssh "$remote_ssh_chain" "mkdir -p $remote_token_path"
+        if [ $? -ne 0 ]; then
+          echo "🔥 create directory $remote_token_path on remote server failure"
+          echo "::error::create directory $remote_token_path on remote server failure"
+          exit 1
+        fi
+        
+        # copy token file to remote server
+        scp "${local_token_file}" "${remote_ssh_chain}:${remote_token_file}"
+        if [ $? -ne 0 ]; then
+          echo "🔥 copy token to remote server failure"
+          echo "::error::copy token to remote server failure"
+          exit 1
+        fi
+        echo "✅ copied token to remote server"       
+        
+        # remove local token file
+        rm -f "${local_token_file}"
+        echo "✅ removed local token file"
+        
+        echo "::endgroup::"
+        echo "remote_token_file=$remote_token_file" >> $GITHUB_OUTPUT
+
+    - name: "Docker Login"
+      id: docker-login
+      shell: bash
+      run: |
+        echo "::group::Login to docker..."
+        
+        remote_ssh_chain="${{ inputs.remote_ssh_chain }}"
+        remote_path="${{ inputs.remote_path }}"
+        remote_toke_file="${{ steps.prepare.outputs.remote_token_file }}"
+        docker_username="${{ inputs.docker_username }}"
+        
+        ssh "${remote_ssh_chain}" <<EOF
+        cd "${remote_path}"
+        cat "${remote_toke_file}" | docker login -u "${docker_username}" --password-stdin 
+        EOF
+        if [ $? -ne 0 ]; then
+          echo "🔥 docker login failure"
+          echo "::error::docker login failure"
+          ssh "$remote_ssh_chain" "rm -f ${remote_toke_file}"            
+          echo "✅ removed token from remote server"
+          echo "::notice::removed token from remote server"      
+          exit 1
+        fi
+        echo "✅ logged in to docker"
+        echo "::notice::logged in to docker"
+        ssh "$remote_ssh_chain" "rm -f ${remote_toke_file}"
+        echo "✅ removed token from remote server"
+        echo "::notice::removed token from remote server"
+        
+        echo "::endgroup::"

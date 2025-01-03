@@ -1,0 +1,65 @@
+name: "Build ssh connection"
+description: "Build ssh connection"
+inputs:
+  remote_host:
+    description: "Remote: host"
+    required: true
+  remote_port:
+    description: "Remote: port"
+    required: false
+    default: "22"
+  remote_user:
+    description: "Remote: user"
+    required: true
+  remote_ssh_key:
+    description: "Remote: ssh key"
+    required: true
+
+outputs:
+  remote_server:
+    description: "SSH server"
+    value: ${{ steps.build.outputs.server }}
+  remote_ssh_chain:
+    description: "SSH chain to remote server"
+    value: ${{ steps.build.outputs.chain }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Build SSH Chain"
+      id: build
+      shell: bash
+      run: |
+        echo "::group::Building ssh chain"
+        ssh_path="${HOME}/.ssh"
+        ssh_key_file="${ssh_path}/id_rsa"
+        server="${{ inputs.remote_host }}"
+        port="${{ inputs.remote_port }}"           
+        mkdir -p ${ssh_path}
+        
+        # store ssh-key on remote server
+        echo "${{ inputs.remote_ssh_key }}" > "${ssh_key_file}"        
+        chmod 600 ${ssh_key_file}
+        echo "✅ created ssh key file"
+        echo "::notice::created ssh key file"
+        
+        known_hosts_file="${ssh_path}/known_hosts"
+        if [ "${port}" = "22" ]; then
+          ssh-keyscan -H ${server} >> ${known_hosts_file}
+        else
+          ssh-keyscan -p ${port} -H ${server} >> ${known_hosts_file}
+        fi
+        echo "✅ remote server added to ~/.ssh/known_hosts"
+        echo "::notice::remote server added to ~/.ssh/known_hosts"
+        
+        user="${{ inputs.remote_user }}"
+        ssh_chain="${user}@${server}"
+        if [ "${port}" != "22" ]; then
+          ssh_chain="${ssh_chain}:${port}"
+        fi
+        echo "✅ ssh chain successfully prepared ($ssh_chain)"
+        echo "::notice::ssh chain successfully prepared"
+
+        echo "::endgroup::"        
+        echo "server=$server" >> $GITHUB_OUTPUT        
+        echo "chain=$ssh_chain" >> $GITHUB_OUTPUT                

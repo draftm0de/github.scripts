@@ -1,0 +1,47 @@
+name: "SSH Copy Files"
+description: "SSH Copy Files"
+inputs:
+  command:
+    description: "Docker compose options"
+    required: true
+  remote_ssh_chain:
+    description: "Remote ssh chain to remote server"
+    required: true
+  remote_path:
+    description: "Remote: root path"
+    required: true
+  docker_username:
+    description: "Docker login: Username"
+    required: false
+  docker_token:
+    description: "Docker login: Token"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: "SSH Docker Login"
+      if: ${{ inputs.docker_username && inputs.docker_token }}
+      uses: draftm0de/scripts.github/.github/action/ssh-docker-login@main
+      with:
+        remote_ssh_chain: ${{ inputs.remote_ssh_chain }}
+        remote_path: ${{ inputs.remote_path }}
+        docker_username: ${{ inputs.docker_username }}
+        docker_token: ${{ inputs.docker_token }}
+
+    - name: "Run Docker Compose Command"
+      shell: bash
+      run: |
+        echo "::group::Executing docker compose..."
+        path="${{ inputs.remote_path }}"
+        ssh_chain="${{ inputs.remote_ssh_chain }}"            
+        command="${{ inputs.command }}"
+        echo "✅ docker compose $command"
+        echo "::notice::docker compose ${command}"
+
+        ssh "${ssh_chain}" <<EOF
+        cd "${path}"
+        docker compose ${command}
+        EOF
+
+        echo "::endgroup::" 

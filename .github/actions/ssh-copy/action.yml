@@ -1,0 +1,82 @@
+name: "SSH Copy Files"
+description: "SSH Copy Files"
+inputs:
+  files:
+    description: "Files to be transferred"
+    required: true
+  remote_ssh_chain:
+    description: "Remote ssh chain to remote server"
+    required: true
+  remote_path:
+    description: "Remote: root path"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Copy Files Via SSH"
+      shell: bash
+      run: |
+        echo "::group::Syncing data..."
+        
+        files="${{ inputs.files }}"
+        ssh_chain="${{ inputs.remote_ssh_chain }}"
+        path="${{ inputs.remote_path }}"                    
+
+        # split files by ,
+        IFS=',' read -ra entries <<< "$files"
+        
+        # for each file
+        for entry in "${entries[@]}"; do
+        
+          # get target path, if exists
+          if [[ "$entry" == *":"* ]]; then
+            # split by :
+            IFS=':' read -r source target <<< "$entry"
+          else
+            # no :, source is the same, and target is the basename of the source
+            source="$entry"
+            target="$(basename "$source")"
+            # remove leading +
+            target="${target#+}"
+          fi
+        
+          # extend target path with root path
+          target="${path}/${target}"
+                          
+          # create target path, if not existing
+          target_path="$(dirname "$target")"        
+          ssh "$ssh_chain" "mkdir -p $target_path"
+          if [ $? -ne 0 ]; then
+            echo "🔥 create directory $target_path on remote server failure"
+            echo "::error::create directory $target_path on remote server failure"
+            exit 1
+          fi      
+        
+          required=""
+          if [[ "$source" == "+"* ]]; then
+            required="true"
+            source="${source#+}"
+          fi
+          if [ -f "$source" ]; then
+            scp "$source" "$ssh_chain:${target}"
+            if [ $? -ne 0 ]; then
+              echo "🔥 copy $source to $target on remote server failure"
+              echo "::error::copy $source to $target on remote server failure"
+              exit 1
+            fi
+            echo "✅ copy $source to ${target}"        
+            echo "::notice::copy $source to ${target}"        
+          else
+            if [ -n "${required}" ]; then
+              echo "🔥 copy $source failure, file does not exist"
+              echo "::error::copy $source failure, file does not exist"
+              exit 1
+            else
+              echo "✅ copy $source skipped, file does not exist"
+              echo "::notice::copy $source skipped, file does not exist"
+            fi
+          fi
+        done
+
+        echo "::endgroup::"  
