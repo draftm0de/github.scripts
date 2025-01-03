@@ -20,3 +20,9 @@ The following sections detail each action, their features, inputs, outputs, and 
 | [ssh-docker-login](.github/actions/ssh-docker-login/README.md)       | securely log in to Docker on remote servers via SSH, enabling access to private repositories.             |
 
 ## Workflows
+
+| Action                                                      | Summary                                                                                             |
+|-------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| [docker-build](.github/workflows/docker-build.md)           | workflow for building Docker images with advanced options, reproducibility, and artifact outputs.   |
+| [docker-deployment](.github/workflows/docker-deployment.md) | workflow for deploying applications with Docker Compose to remote servers via SSH.                  |
+| [docker-push](.github/workflows/docker-push.md)             | workflow for pushing Docker images, with support for artifacts, tagging, and secure authentication. |

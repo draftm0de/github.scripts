@@ -10,11 +10,20 @@ This GitHub Action facilitates secure file transfers to a remote server over SSH
 
 ## Inputs
 
-| Name               | Description                          | Required | Default |
-|--------------------|--------------------------------------|----------|---------|
+| Name               | Description                                                                                                   | Required | Default |
+|--------------------|---------------------------------------------------------------------------------------------------------------|----------|---------|
 | `files`            | Files to be transferred, separated by commas. Can specify custom target paths using `:` (e.g., `source:file`) | Yes      |         |
-| `remote_ssh_chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
-| `remote_path`      | Root directory path on the remote server | Yes      |         |
+| `remote_ssh_chain` | SSH chain to the remote server (user@host:port)                                                               | Yes      |         |
+| `remote_path`      | Root directory path on the remote server                                                                      | Yes      |         |
+
+## How It Works
+
+1. Splits the list of files provided as input into individual entries.
+2. For each file:
+   - Creates the target directory on the remote server if it doesn't exist.
+   - Transfers the file using `scp`.
+   - Skips optional files that don't exist locally, but fails the process for required files (indicated with a `+` prefix).
+3. Logs the process and errors, ensuring transparency.
 
 ## Usage
 
@@ -32,12 +41,3 @@ jobs:
           remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
           remote_path: /remote/root/path
 ```
-
-## How It Works
-
-1. Splits the list of files provided as input into individual entries.
-2. For each file:
-   - Creates the target directory on the remote server if it doesn't exist.
-   - Transfers the file using `scp`.
-   - Skips optional files that don't exist locally, but fails the process for required files (indicated with a `+` prefix).
-3. Logs the process and errors, ensuring transparency.

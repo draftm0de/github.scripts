@@ -9,8 +9,8 @@ This GitHub Action enables loading a previously saved Docker image from an artif
 
 ## Inputs
 
-| Name      | Description                                     | Required | Default |
-|-----------|-------------------------------------------------|----------|---------|
+| Name       | Description                                                                  | Required | Default |
+|------------|------------------------------------------------------------------------------|----------|---------|
 | `artifact` | Fully qualified artifact file path (e.g., `artifact-name/path/to/file.tar`). | Yes      |         |
 
 ## Outputs
@@ -18,6 +18,13 @@ This GitHub Action enables loading a previously saved Docker image from an artif
 | Name    | Description                |
 |---------|----------------------------|
 | `image` | Name of the loaded image.  |
+
+## How It Works
+
+1. Extracts the artifact name and file path from the provided input.
+2. Downloads the specified artifact using `actions/download-artifact`.
+3. Loads the Docker image from the artifact file into Docker using `docker load`.
+4. Outputs the loaded image's name for subsequent use.
 
 ## Usage
 
@@ -33,10 +40,3 @@ jobs:
         with:
           artifact: myartifact/image.tar
 ```
-
-## How It Works
-
-1. Extracts the artifact name and file path from the provided input.
-2. Downloads the specified artifact using `actions/download-artifact`.
-3. Loads the Docker image from the artifact file into Docker using `docker load`.
-4. Outputs the loaded image's name for subsequent use.

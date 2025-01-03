@@ -24,6 +24,13 @@ This GitHub Action simplifies establishing an SSH connection by preparing an SSH
 | `remote_server`     | The remote server's address        |
 | `remote_ssh_chain`  | SSH chain to the remote server     |
 
+
+## How It Works
+
+1. The action generates an SSH key and stores it in ~/.ssh/id_rsa.
+2. Adds the remote server to the ~/.ssh/known_hosts file using `ssh-keyscan`.
+3. Constructs the SSH chain string (user@host:port) for use in subsequent steps.
+ 
 ## Usage
 
 Below is an example of how to use this action in your workflow:
@@ -41,9 +48,3 @@ jobs:
           remote_user: ubuntu
           remote_ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
-
-## How It Works
-
-1. The action generates an SSH key and stores it in ~/.ssh/id_rsa.
-2. Adds the remote server to the ~/.ssh/known_hosts file using ssh-keyscan.
-3. Constructs the SSH chain string (user@host:port) for use in subsequent steps.

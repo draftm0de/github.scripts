@@ -20,15 +20,15 @@ This GitHub Action allows you to push Docker images to a registry. It supports l
 ## How It Works
 
 1. **Load Docker Image**:
-    - If the `artifact` input is provided, the action downloads and loads the image from the specified artifact.
-    - If the `image` input is provided, it uses the specified Docker image directly.
+   - If the `artifact` input is provided, the action downloads and loads the image from the specified artifact.
+   - If the `image` input is provided, it uses the specified Docker image directly.
 
 2. **Prepare Push Arguments**:
-    - Verifies the provided image or artifact is valid and accessible.
-    - Extracts the Docker username from the image name.
+   - Verifies the provided image or artifact is valid and accessible.
+     - Extracts the Docker username from the image name.
 
 3. **Login to Docker Hub**:
-    - Logs into Docker Hub using the provided username and API token.
+   - Logs into Docker Hub using the provided username and API token.
 
 4. **Push Docker Image**:
     - Optionally tags the image with the name provided in the `target` input.

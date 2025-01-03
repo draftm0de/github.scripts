@@ -10,12 +10,18 @@ This GitHub Action facilitates secure Docker login on a remote server over SSH, 
 
 ## Inputs
 
-| Name               | Description                               | Required | Default |
-|--------------------|-------------------------------------------|----------|---------|
+| Name               | Description                                     | Required | Default |
+|--------------------|-------------------------------------------------|----------|---------|
 | `remote_ssh_chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
-| `remote_path`      | Root directory path on the remote server  | Yes      |         |
-| `docker_username`  | Docker Hub username                      | Yes      |         |
-| `docker_token`     | Docker Hub token                         | Yes      |         |
+| `remote_path`      | Root directory path on the remote server        | Yes      |         |
+| `docker_username`  | Docker Hub username                             | Yes      |         |
+| `docker_token`     | Docker Hub token                                | Yes      |         |
+
+## How It Works
+
+1. Generates a local token file and transfers it to the remote server.
+2. Logs in to Docker on the remote server using the provided credentials.
+3. Removes the token file from both local and remote locations to ensure security.
 
 ## Usage
 
@@ -34,9 +40,3 @@ jobs:
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_token: ${{ secrets.DOCKER_TOKEN }}
 ```
-
-## How It Works
-
-1. Generates a local token file and transfers it to the remote server. 
-2. Logs in to Docker on the remote server using the provided credentials. 
-3. Removes the token file from both local and remote locations to ensure security.

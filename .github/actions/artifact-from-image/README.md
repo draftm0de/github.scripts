@@ -10,15 +10,21 @@ This GitHub Action saves a specified Docker image as a `.tar` file and uploads i
 
 ## Inputs
 
-| Name    | Description                                   | Required | Default |
-|---------|-----------------------------------------------|----------|---------|
+| Name    | Description                                                                          | Required | Default |
+|---------|--------------------------------------------------------------------------------------|----------|---------|
 | `image` | Docker image name (e.g., `repo/image:tag`). If no tag is provided, `latest` is used. | Yes      |         |
 
 ## Outputs
 
-| Name         | Description                                       |
-|--------------|---------------------------------------------------|
-| `artifact`   | Reference to the uploaded artifact (`name/path`) |
+| Name       | Description                                      |
+|------------|--------------------------------------------------|
+| `artifact` | Reference to the uploaded artifact (`name/path`) |
+
+## How It Works
+
+1. Extracts the image name and tag from the input and prepares an artifact name.
+2. Saves the specified Docker image as a `.tar` file using `docker save`.
+3. Uploads the `.tar` file as an artifact using `actions/upload-artifact`.
 
 ## Usage
 
@@ -34,9 +40,3 @@ jobs:
         with:
           image: myrepo/myimage:1.0
 ```
-
-## How It Works
-
-1. Extracts the image name and tag from the input and prepares an artifact name.
-2. Saves the specified Docker image as a `.tar` file using `docker save`.
-3. Uploads the `.tar` file as an artifact using `actions/upload-artifact`.

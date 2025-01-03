@@ -1,0 +1,69 @@
+name: Docker Compose Deployment
+
+on:
+  workflow_call:
+    inputs:
+      remote_host:
+        description: "Remote: host"
+        required: true
+        type: string
+      remote_port:
+        description: "Remote: port"
+        required: false
+        default: "22"
+        type: string
+      remote_user:
+        description: "Remote: user"
+        required: true
+        type: string
+      remote_path:
+        description: "Remote: root path"
+        required: true
+        type: string
+      transfer_files:
+        description: "Files to be transferred"
+        required: true
+        type: string
+      docker_username:
+        description: "Docker login: Username"
+        required: false
+        type: string
+    secrets:
+      DOCKER_TOKEN:
+        description: "Docker login: Token"
+        required: false
+      REMOTE_SSH_KEY:
+        description: "Remote: ssh key"
+        required: true
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "SSH Connect"
+        id: connect
+        uses: draftm0de/scripts.github/.github/action/ssh-connect@main
+        with:
+          remote_host: ${{ inputs.remote_host }}
+          remote_port: ${{ inputs.remote_port }}
+          remote_user: ${{ inputs.remote_user }}
+          remote_ssh_key:  ${{ secrets.REMOTE_SSH_KEY }}
+
+      - name: "Sync Deployment Files"
+        uses: draftm0de/scripts.github/.github/action/ssh-copy@main
+        with:
+          files: ${{ inputs.transfer_files }}
+          remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
+          remote_path: ${{ inputs.remote_path }}
+
+      - name: "Docker Compose"
+        uses: draftm0de/scripts.github/.github/action/ssh-docker-compose@main
+        with:
+          command: "up -d"
+          remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
+          remote_path: ${{ inputs.remote_path }}
+          docker_username: ${{ inputs.docker_username }}
+          docker_token: ${{ secrets.DOCKER_TOKEN }}

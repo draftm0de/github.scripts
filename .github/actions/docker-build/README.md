@@ -22,11 +22,26 @@ This GitHub Action builds Docker images from a specified context, supports advan
 
 ## Outputs
 
-| Name      | Description                                   |
-|-----------|-----------------------------------------------|
-| `digest`  | Digest of the built Docker image              |
-| `artifact`| Name of the uploaded Docker image artifact    |
+| Name       | Description                                |
+|------------|--------------------------------------------|
+| `digest`   | Digest of the built Docker image           |
+| `artifact` | Name of the uploaded Docker image artifact |
 
+
+## How It Works
+
+1. **Prepare Build Arguments:**
+   - Parses the provided inputs to construct Docker build arguments and options.
+   - Reads additional build arguments from a file, if specified.
+   - Determines the image name, tag, and build context.
+2. **Set Up for Reproducible Builds:**
+   - If reproducible is enabled, sets up docker buildx for deterministic builds.
+3. **Build Docker Image:**
+   - Executes the build using docker build or docker buildx build depending on the reproducibility setting.
+   - Extracts the image digest after a successful build.
+4. **Upload the Built Image:**
+   - Uploads the built Docker image as an artifact using a specified action.
+ 
 ## Usage Example
 
 ```
@@ -43,17 +58,3 @@ jobs:
           options: --no-cache
           build_args_file: build-args.txt
 ```
-
-## How It Works
-
-1. Prepare Build Arguments:
-- Parses the provided inputs to construct Docker build arguments and options.
-- Reads additional build arguments from a file, if specified. 
-- Determines the image name, tag, and build context.
-2. Set Up for Reproducible Builds:
-- If reproducible is enabled, sets up docker buildx for deterministic builds.
-3. Build Docker Image:
-- Executes the build using docker build or docker buildx build depending on the reproducibility setting.
-- Extracts the image digest after a successful build.
-4. Upload the Built Image:
-- Uploads the built Docker image as an artifact using a specified action.
