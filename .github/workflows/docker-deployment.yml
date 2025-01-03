@@ -45,7 +45,7 @@ jobs:
 
       - name: "SSH Connect"
         id: connect
-        uses: draftm0de/scripts.github/.github/action/ssh-connect@main
+        uses: draftm0de/scripts.github/.github/actions/ssh-connect@main
         with:
           remote_host: ${{ inputs.remote_host }}
           remote_port: ${{ inputs.remote_port }}
@@ -53,14 +53,14 @@ jobs:
           remote_ssh_key:  ${{ secrets.REMOTE_SSH_KEY }}
 
       - name: "Sync Deployment Files"
-        uses: draftm0de/scripts.github/.github/action/ssh-copy@main
+        uses: draftm0de/scripts.github/.github/actions/ssh-copy@main
         with:
           files: ${{ inputs.transfer_files }}
           remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
           remote_path: ${{ inputs.remote_path }}
 
       - name: "Docker Compose"
-        uses: draftm0de/scripts.github/.github/action/ssh-docker-compose@main
+        uses: draftm0de/scripts.github/.github/actions/ssh-docker-compose@main
         with:
           command: "up -d"
           remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
