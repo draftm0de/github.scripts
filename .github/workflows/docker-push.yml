@@ -40,7 +40,7 @@ jobs:
           echo "::endgroup::"
 
       - name: "Push Docker Image"
-        uses: draftm0de/scripts.github/.github/actions/docker-push@main
+        uses: draftm0de/github.scripts/.github/actions/docker-push@main
         with:
           image: ${{ inputs.image }}
           artifact: ${{ inputs.artifact }}

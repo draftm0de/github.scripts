@@ -22,7 +22,7 @@ runs:
   steps:
     - name: "SSH Docker Login"
       if: ${{ inputs.docker_username && inputs.docker_token }}
-      uses: draftm0de/scripts.github/.github/actions/ssh-docker-login@main
+      uses: draftm0de/github.scripts/.github/actions/ssh-docker-login@main
       with:
         remote_ssh_chain: ${{ inputs.remote_ssh_chain }}
         remote_path: ${{ inputs.remote_path }}
