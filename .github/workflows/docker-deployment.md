@@ -18,6 +18,7 @@ This reusable GitHub Actions workflow automates deploying applications using Doc
 | `remote_user`     | Remote SSH username                       | Yes      |         |
 | `remote_path`     | Root directory path on the remote server  | Yes      |         |
 | `transfer_files`  | Comma-separated list of files to transfer | Yes      |         |
+| `docker_command`  | To be executed docker compose command     | No       |         |
 | `docker_username` | Docker Hub username for authentication    | No       |         |
 
 ## Secrets
@@ -36,7 +37,8 @@ This reusable GitHub Actions workflow automates deploying applications using Doc
 3. **Docker Authentication:**
 - Optionally logs in to Docker on the remote server using the provided credentials and token.
 4. **Docker Compose Execution:**
-- Runs the specified Docker Compose command (up -d) to deploy or update the application on the remote server.
+- Runs the specified Docker Compose command (e.g. up -d) to deploy or update the application on the remote server.
+- The argument `docker_command` is optional and will be only executed if provided
 
 ## Usage Example
 
@@ -56,6 +58,7 @@ jobs:
       remote_user: deploy
       remote_path: /var/www/app
       transfer_files: docker-compose.yml,.env
+      docker_command: up -d
       docker_username: mydockerusername
     secrets:
       REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
