@@ -24,6 +24,10 @@ on:
         description: "Files to be transferred"
         required: true
         type: string
+      docker_command:
+        description: "Docker Compose Command"
+        required: false
+        type: string
       docker_username:
         description: "Docker login: Username"
         required: false
@@ -60,9 +64,10 @@ jobs:
           remote_path: ${{ inputs.remote_path }}
 
       - name: "Docker Compose"
+        if: ${{ inputs.docker_command }}
         uses: draftm0de/scripts.github/.github/actions/ssh-docker-compose@main
         with:
-          command: "up -d"
+          command: ${{ inputs.docker_command }}
           remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
           remote_path: ${{ inputs.remote_path }}
           docker_username: ${{ inputs.docker_username }}
