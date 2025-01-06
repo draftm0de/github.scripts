@@ -68,13 +68,24 @@ runs:
             echo "✅ copy $source to ${target}"        
             echo "::notice::copy $source to ${target}"        
           else
-            if [ -n "${required}" ]; then
-              echo "🔥 copy $source failure, file does not exist"
-              echo "::error::copy $source failure, file does not exist"
-              exit 1
+            if [ -d "${source}" ]; then
+              rsync -avz --delete -e ssh "${source}" "$ssh_chain:${target}"
+              if [ $? -ne 0 ]; then
+                echo "🔥 rsync $source to $target on remote server failure"
+                echo "::error::rsync $source to $target on remote server failure"
+                exit 1
+              fi 
+              echo "✅ rsync $source to ${target}"        
+              echo "::notice::rsync $source to ${target}"           
             else
-              echo "✅ copy $source skipped, file does not exist"
-              echo "::notice::copy $source skipped, file does not exist"
+              if [ -n "${required}" ]; then
+                echo "🔥 copy $source failure, file/directory does not exist"
+                echo "::error::copy $source failure, file/directory does not exist"
+                exit 1
+              else
+                echo "✅ copy $source skipped, file/directory does not exist"
+                echo "::notice::copy $source skipped, file/directory does not exist"
+              fi
             fi
           fi
         done
