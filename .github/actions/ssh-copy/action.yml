@@ -26,6 +26,11 @@ runs:
         # split files by ,
         IFS=',' read -ra entries <<< "$files"
         
+        directory_exists() {
+          local path="${1}"
+          ssh "$ssh_chain" "if [ -d '${path}' ]; then echo "true"; else echo "false"; fi"
+        }
+        
         # for each file
         for entry in "${entries[@]}"; do
         
@@ -44,14 +49,22 @@ runs:
           # extend target path with root path
           target="${path}/${target}"
                           
-          # create target path, if not existing
-          target_path="$(dirname "$target")"        
-          ssh "$ssh_chain" "mkdir -p $target_path"
-          if [ $? -ne 0 ]; then
-            echo "🔥 create directory $target_path on remote server failure"
-            echo "::error::create directory $target_path on remote server failure"
-            exit 1
-          fi      
+          if [ -d "$source" ]; then
+            target_path="$target"
+          else 
+            target_path="$(dirname "$target")"
+          fi 
+          target_path_exists=$(directory_exists "$target_path")
+          if [ "$target_path_exists" == "false" ]; then
+            ssh "$ssh_chain" "mkdir -p $target_path"
+            if [ $? -ne 0 ]; then
+              echo "🔥 create directory $target_path on remote server failure"
+              echo "::error::create directory $target_path on remote server failure"
+              exit 1
+            fi
+            echo "✅ created path $target_path"  
+            echo "::notice::created path $target_path"    
+          fi 
         
           required=""
           if [[ "$source" == "+"* ]]; then
