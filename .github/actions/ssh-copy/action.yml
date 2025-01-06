@@ -83,7 +83,7 @@ runs:
             echo "::notice::${target}"        
           else
             if [ -d "${source}" ]; then
-              rsync -avz --delete -e ssh "${source}" "$ssh_chain:${target}"
+              rsync -avz --delete -e ssh "${source}/" "$ssh_chain:${target}"
               if [ $? -ne 0 ]; then
                 echo "🔥 rsync $source to $target on remote server failure"
                 echo "::error::rsync $source to $target on remote server failure"
