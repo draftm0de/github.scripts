@@ -54,20 +54,17 @@ runs:
           else 
             target_path="$(dirname "$target")"
           fi 
-          echo "> verify target path: $target_path" 
+
           target_path_exists=$(directory_exists "$target_path")
           if [ "$target_path_exists" == "false" ]; then
-            echo "> target path does not exist"
             ssh "$ssh_chain" "mkdir -p $target_path"
             if [ $? -ne 0 ]; then
               echo "🔥 create directory $target_path on remote server failure"
               echo "::error::create directory $target_path on remote server failure"
               exit 1
             fi
-            echo "✅ created path $target_path"  
-            echo "::notice::created path $target_path"
-          else 
-            echo "> target path exists"
+            echo "✅ created directory $target_path on remote server"  
+            echo "::notice::created directory $target_path on remote server"
           fi 
         
           required=""
@@ -82,20 +79,18 @@ runs:
               echo "::error::copy $source to $target on remote server failure"
               exit 1
             fi
-            echo "✅ copy $source to ${target}"        
-            echo "::notice::copy $source to ${target}"        
+            echo "✅ ${target}"        
+            echo "::notice::${target}"        
           else
             if [ -d "${source}" ]; then
-              ssh "$ssh_chain" echo "✅ SSH connection works"
-              ssh "$ssh_chain" ls -ld "$target"
               rsync -avz --delete -e ssh "${source}" "$ssh_chain:${target}"
               if [ $? -ne 0 ]; then
                 echo "🔥 rsync $source to $target on remote server failure"
                 echo "::error::rsync $source to $target on remote server failure"
                 exit 1
               fi 
-              echo "✅ rsync $source to ${target}"        
-              echo "::notice::rsync $source to ${target}"           
+              echo "✅ rsynced $source to ${target}"        
+              echo "::notice::rsynced $source to ${target}"           
             else
               if [ -n "${required}" ]; then
                 echo "🔥 copy $source failure, file/directory does not exist"
