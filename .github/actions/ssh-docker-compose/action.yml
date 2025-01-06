@@ -1,5 +1,5 @@
-name: "SSH Copy Files"
-description: "SSH Copy Files"
+name: "SSH Run Docker Compose Command"
+description: "SSH Run Docker Compose Command"
 inputs:
   command:
     description: "Docker compose options"
@@ -10,6 +10,9 @@ inputs:
   remote_path:
     description: "Remote: root path"
     required: true
+  docker_registry:
+    description: "Docker Host (default: Docker Hub)"
+    required: false
   docker_username:
     description: "Docker login: Username"
     required: false
@@ -20,12 +23,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "SSH Docker Login"
+    - name: "Docker Login"
       if: ${{ inputs.docker_username && inputs.docker_token }}
       uses: draftm0de/github.scripts/.github/actions/ssh-docker-login@main
       with:
         remote_ssh_chain: ${{ inputs.remote_ssh_chain }}
         remote_path: ${{ inputs.remote_path }}
+        docker_registry: ${{ inputs.docker_registry }}
         docker_username: ${{ inputs.docker_username }}
         docker_token: ${{ inputs.docker_token }}
 
@@ -45,3 +49,9 @@ runs:
         EOF
 
         echo "::endgroup::" 
+
+    - name: "Post: Docker Logout"
+      if: ${{ inputs.docker_username && inputs.docker_token }}
+      shell: bash
+      run: |
+        docker logout

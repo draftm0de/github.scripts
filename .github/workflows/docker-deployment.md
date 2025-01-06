@@ -11,15 +11,16 @@ This reusable GitHub Actions workflow automates deploying applications using Doc
 
 ## Inputs
 
-| Name              | Description                               | Required | Default |
-|-------------------|-------------------------------------------|----------|---------|
-| `remote_host`     | Remote server hostname or IP address      | Yes      |         |
-| `remote_port`     | Remote SSH port                           | No       | `22`    |
-| `remote_user`     | Remote SSH username                       | Yes      |         |
-| `remote_path`     | Root directory path on the remote server  | Yes      |         |
-| `transfer_files`  | Comma-separated list of files to transfer | Yes      |         |
-| `docker_command`  | To be executed docker compose command     | No       |         |
-| `docker_username` | Docker Hub username for authentication    | No       |         |
+| Name              | Description                                      | Required | Default |
+|-------------------|--------------------------------------------------|----------|---------|
+| `remote_host`     | Remote server hostname or IP address             | Yes      |         |
+| `remote_port`     | Remote SSH port                                  | No       | `22`    |
+| `remote_user`     | Remote SSH username                              | Yes      |         |
+| `remote_path`     | Root directory path on the remote server         | Yes      |         |
+| `transfer_files`  | Comma-separated list of files to transfer        | Yes      |         |
+| `docker_registry` | To be used docker registry (default: Docker hub) | No       |         |
+| `docker_command`  | To be executed docker compose command            | No       |         |
+| `docker_username` | Docker Hub username for authentication           | No       |         |
 
 ## Secrets
 

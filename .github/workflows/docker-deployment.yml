@@ -28,6 +28,10 @@ on:
         description: "Docker Compose Command"
         required: false
         type: string
+      docker_registry:
+        description: "Docker Host (default: Docker Hub)"
+        required: false
+        type: string
       docker_username:
         description: "Docker login: Username"
         required: false
@@ -38,7 +42,7 @@ on:
         required: false
       REMOTE_SSH_KEY:
         description: "Remote: ssh key"
-        required: true
+        required: false
 
 jobs:
   deployment:
@@ -70,5 +74,6 @@ jobs:
           command: ${{ inputs.docker_command }}
           remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
           remote_path: ${{ inputs.remote_path }}
+          docker_registry: ${{ inputs.docker_registry }}
           docker_username: ${{ inputs.docker_username }}
           docker_token: ${{ secrets.DOCKER_TOKEN }}

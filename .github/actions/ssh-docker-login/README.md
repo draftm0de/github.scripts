@@ -33,10 +33,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Perform Docker Login on Remote
-        uses: ./
+        uses: ./.github/actions/ssh-docker-login@main
         with:
           remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
           remote_path: /remote/docker/path
+          docker_username: ${{ secrets.DOCKER_USERNAME }}
+          docker_token: ${{ secrets.DOCKER_TOKEN }}
+```
+using `ghcr.io` as registry
+```
+jobs:
+  docker-login:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Perform Docker Login on Remote
+        uses: ./.github/actions/ssh-docker-login@main
+        with:
+          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
+          remote_path: /remote/docker/path
+          docker_registry: ghcr.io
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_token: ${{ secrets.DOCKER_TOKEN }}
 ```

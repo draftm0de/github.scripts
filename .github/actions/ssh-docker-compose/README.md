@@ -10,13 +10,14 @@ This GitHub Action simplifies executing Docker Compose commands on a remote serv
 
 ## Inputs
 
-| Name               | Description                                     | Required | Default |
-|--------------------|-------------------------------------------------|----------|---------|
-| `command`          | Docker Compose command to execute               | Yes      |         |
-| `remote_ssh_chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
-| `remote_path`      | Root directory path on the remote server        | Yes      |         |
-| `docker_username`  | Docker Hub username for authentication          | No       |         |
-| `docker_token`     | Docker Hub token for authentication             | No       |         |
+| Name               | Description                                      | Required | Default |
+|--------------------|--------------------------------------------------|----------|---------|
+| `command`          | Docker Compose command to execute                | Yes      |         |
+| `remote_ssh_chain` | SSH chain to the remote server (user@host:port)  | Yes      |         |
+| `remote_path`      | Root directory path on the remote server         | Yes      |         |
+| `docker_registry`  | To be used docker registry (default: Docker hub) | No       |         |
+| `docker_username`  | Docker registry username for authentication      | No       |         |
+| `docker_token`     | Docker registry token for authentication         | No       |         |
 
 ## How It Works
 
@@ -34,11 +35,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Docker Compose
-        uses: ./
+        uses: ./.github/actions/ssh-docker-compose@main
         with:
           command: up -d
           remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
           remote_path: /remote/docker/path
+          docker_username: ${{ secrets.DOCKER_USERNAME }}
+          docker_token: ${{ secrets.DOCKER_TOKEN }}
+```
+using `ghcr.io` as registry
+```
+jobs:
+  run-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Docker Compose
+        uses: ./.github/actions/ssh-docker-compose@main
+        with:
+          command: up -d
+          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
+          remote_path: /remote/docker/path
+          docker_registry: ghcr.io          
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_token: ${{ secrets.DOCKER_TOKEN }}
 ```

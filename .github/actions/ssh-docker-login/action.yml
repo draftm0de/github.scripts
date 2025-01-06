@@ -7,6 +7,9 @@ inputs:
   remote_path:
     description: "Remote: root path"
     required: true
+  docker_registry:
+    description: "Docker Host (default: Docker Hub)"
+    required: false
   docker_username:
     description: "Docker login: username"
     required: true
@@ -50,7 +53,7 @@ runs:
           echo "::error::copy token to remote server failure"
           exit 1
         fi
-        echo "✅ copied token to remote server"       
+        echo "✅ copied token to remote server"     
         
         # remove local token file
         rm -f "${local_token_file}"
@@ -72,7 +75,16 @@ runs:
         
         ssh "${remote_ssh_chain}" <<EOF
         cd "${remote_path}"
-        cat "${remote_toke_file}" | docker login -u "${docker_username}" --password-stdin 
+        docker_registry="${{ inputs.docker_registry }}"
+        if [ -n "${docker_registry}" ]; then
+          echo "✅ use custom docker registry: ${docker_registry}"
+          echo "::notice::use custom docker registry"
+          cat "${remote_toke_file}" | docker login ${docker_registry} -u "${docker_username}" --password-stdin
+        else        
+          echo "✅ use docker hub registry"
+          echo "::notice::use docker hub registry"
+          cat "${remote_toke_file}" | docker login -u "${docker_username}" --password-stdin
+        fi 
         EOF
         if [ $? -ne 0 ]; then
           echo "🔥 docker login failure"
