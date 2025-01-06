@@ -54,8 +54,10 @@ runs:
           else 
             target_path="$(dirname "$target")"
           fi 
+          echo "> verify target path: $target_path" 
           target_path_exists=$(directory_exists "$target_path")
           if [ "$target_path_exists" == "false" ]; then
+            echo "> target path does not exist"
             ssh "$ssh_chain" "mkdir -p $target_path"
             if [ $? -ne 0 ]; then
               echo "🔥 create directory $target_path on remote server failure"
@@ -63,7 +65,9 @@ runs:
               exit 1
             fi
             echo "✅ created path $target_path"  
-            echo "::notice::created path $target_path"    
+            echo "::notice::created path $target_path"
+          else 
+            echo "> target path exists"
           fi 
         
           required=""
