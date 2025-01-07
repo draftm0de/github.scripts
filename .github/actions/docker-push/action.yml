@@ -94,6 +94,11 @@ runs:
           echo "> built image $image tagged with: $tag"
           image="${tag}"        
         fi
+        if [ -n "${{ inputs.docker-registry }}" ]; then
+          tag="${{ inputs.docker-registry }}/${image}"
+          docker tag ${image} ${tag}
+          image="${tag}"
+        fi
         echo ">push: $image"
         docker push $image
         
