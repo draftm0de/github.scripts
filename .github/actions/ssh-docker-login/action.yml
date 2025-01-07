@@ -72,19 +72,18 @@ runs:
         remote_path="${{ inputs.remote-path }}"
         remote_toke_file="${{ steps.prepare.outputs.remote_token_file }}"
         docker_username="${{ inputs.docker-username }}"
-        
-        ssh "${remote_ssh_chain}" <<EOF
-        cd "${remote_path}"
         docker_registry="${{ inputs.docker-registry }}"
-        if [ -n "\${docker_registry}" ]; then
-          echo "✅ use custom docker registry: \${docker_registry}"
+        
+        if [ -n "${docker_registry}" ]; then
+          echo "✅ use custom docker registry: ${docker_registry}"
           echo "::notice::use custom docker registry"
-          cat "${remote_toke_file}" | docker login \${docker_registry} -u "${docker_username}" --password-stdin
-        else        
+        else
           echo "✅ use docker hub registry"
           echo "::notice::use docker hub registry"
-          cat "${remote_toke_file}" | docker login -u "${docker_username}" --password-stdin
-        fi 
+        fi
+        ssh "${remote_ssh_chain}" <<EOF
+        cd "${remote_path}"
+        cat "${remote_toke_file}" | docker login ${docker_registry} -u "${docker_username}" --password-stdin
         EOF
         if [ $? -ne 0 ]; then
           echo "🔥 docker login failure"
