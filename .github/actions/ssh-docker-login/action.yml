@@ -76,10 +76,10 @@ runs:
         ssh "${remote_ssh_chain}" <<EOF
         cd "${remote_path}"
         docker_registry="${{ inputs.docker-registry }}"
-        if [ -n "${docker_registry}" ]; then
-          echo "✅ use custom docker registry: ${docker_registry}"
+        if [ -n "\${docker_registry}" ]; then
+          echo "✅ use custom docker registry: \${docker_registry}"
           echo "::notice::use custom docker registry"
-          cat "${remote_toke_file}" | docker login ${docker_registry} -u "${docker_username}" --password-stdin
+          cat "${remote_toke_file}" | docker login \${docker_registry} -u "${docker_username}" --password-stdin
         else        
           echo "✅ use docker hub registry"
           echo "::notice::use docker hub registry"
