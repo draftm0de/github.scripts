@@ -4,10 +4,10 @@ inputs:
   files:
     description: "Files to be transferred"
     required: true
-  remote_ssh_chain:
+  remote-ssh-chain:
     description: "Remote ssh chain to remote server"
     required: true
-  remote_path:
+  remote-path:
     description: "Remote: root path"
     required: true
 
@@ -20,8 +20,8 @@ runs:
         echo "::group::Syncing data..."
         
         files="${{ inputs.files }}"
-        ssh_chain="${{ inputs.remote_ssh_chain }}"
-        path="${{ inputs.remote_path }}"                    
+        ssh_chain="${{ inputs.remote-ssh-chain }}"
+        path="${{ inputs.remote-path }}"                    
 
         # split files by ,
         IFS=',' read -ra entries <<< "$files"

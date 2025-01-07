@@ -1,25 +1,25 @@
 name: "Build ssh connection"
 description: "Build ssh connection"
 inputs:
-  remote_host:
+  remote-host:
     description: "Remote: host"
     required: true
-  remote_port:
+  remote-port:
     description: "Remote: port"
     required: false
     default: "22"
-  remote_user:
+  remote-user:
     description: "Remote: user"
     required: true
-  remote_ssh_key:
+  remote-ssh-key:
     description: "Remote: ssh key"
     required: true
 
 outputs:
-  remote_server:
+  remote-server:
     description: "SSH server"
     value: ${{ steps.build.outputs.server }}
-  remote_ssh_chain:
+  remote-ssh-chain:
     description: "SSH chain to remote server"
     value: ${{ steps.build.outputs.chain }}
 
@@ -33,12 +33,12 @@ runs:
         echo "::group::Building ssh chain"
         ssh_path="${HOME}/.ssh"
         ssh_key_file="${ssh_path}/id_rsa"
-        server="${{ inputs.remote_host }}"
-        port="${{ inputs.remote_port }}"           
+        server="${{ inputs.remote-host }}"
+        port="${{ inputs.remote-port }}"           
         mkdir -p ${ssh_path}
         
         # store ssh-key on remote server
-        echo "${{ inputs.remote_ssh_key }}" > "${ssh_key_file}"        
+        echo "${{ inputs.remote-ssh-key }}" > "${ssh_key_file}"        
         chmod 600 ${ssh_key_file}
         echo "✅ created ssh key file"
         echo "::notice::created ssh key file"
@@ -52,7 +52,7 @@ runs:
         echo "✅ remote server added to ~/.ssh/known_hosts"
         echo "::notice::remote server added to ~/.ssh/known_hosts"
         
-        user="${{ inputs.remote_user }}"
+        user="${{ inputs.remote-user }}"
         ssh_chain="${user}@${server}"
         if [ "${port}" != "22" ]; then
           ssh_chain="${ssh_chain}:${port}"

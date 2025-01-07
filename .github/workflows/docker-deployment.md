@@ -13,14 +13,14 @@ This reusable GitHub Actions workflow automates deploying applications using Doc
 
 | Name              | Description                                      | Required | Default |
 |-------------------|--------------------------------------------------|----------|---------|
-| `remote_host`     | Remote server hostname or IP address             | Yes      |         |
-| `remote_port`     | Remote SSH port                                  | No       | `22`    |
-| `remote_user`     | Remote SSH username                              | Yes      |         |
-| `remote_path`     | Root directory path on the remote server         | Yes      |         |
-| `transfer_files`  | Comma-separated list of files to transfer        | Yes      |         |
-| `docker_registry` | To be used docker registry (default: Docker hub) | No       |         |
-| `docker_command`  | To be executed docker compose command            | No       |         |
-| `docker_username` | Docker Hub username for authentication           | No       |         |
+| `remote-host`     | Remote server hostname or IP address             | Yes      |         |
+| `remote-port`     | Remote SSH port                                  | No       | `22`    |
+| `remote-user`     | Remote SSH username                              | Yes      |         |
+| `remote-path`     | Root directory path on the remote server         | Yes      |         |
+| `transfer-files`  | Comma-separated list of files to transfer        | Yes      |         |
+| `docker-registry` | To be used docker registry (default: Docker hub) | No       |         |
+| `docker-command`  | To be executed docker compose command            | No       |         |
+| `docker-username` | Docker Hub username for authentication           | No       |         |
 
 ## Secrets
 
@@ -39,7 +39,7 @@ This reusable GitHub Actions workflow automates deploying applications using Doc
 - Optionally logs in to Docker on the remote server using the provided credentials and token.
 4. **Docker Compose Execution:**
 - Runs the specified Docker Compose command (e.g. up -d) to deploy or update the application on the remote server.
-- The argument `docker_command` is optional and will be only executed if provided
+- The argument `docker-command` is optional and will be only executed if provided
 
 ## Usage Example
 
@@ -55,12 +55,12 @@ jobs:
   deploy:
     uses: ./.github/workflows/docker-deployment.yml
     with:
-      remote_host: example.com
-      remote_user: deploy
-      remote_path: /var/www/app
-      transfer_files: docker-compose.yml,.env
-      docker_command: up -d
-      docker_username: mydockerusername
+      remote-host: example.com
+      remote-user: deploy
+      remote-path: /var/www/app
+      transfer-files: docker-compose.yml,.env
+      docker-command: up -d
+      docker-username: mydockerusername
     secrets:
       REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
       DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}

@@ -54,5 +54,5 @@ jobs:
           target: ${{ inputs.target }}
           context: ${{ inputs.context }}
           options: ${{ inputs.options }}
-          build_args_file: ${{ inputs.build-args-file }}
+          build-args-file: ${{ inputs.build-args-file }}
           reproducible: ${{ inputs.reproducible }}

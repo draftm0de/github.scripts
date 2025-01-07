@@ -3,36 +3,36 @@ name: Docker Compose Deployment
 on:
   workflow_call:
     inputs:
-      remote_host:
+      remote-host:
         description: "Remote: host"
         required: true
         type: string
-      remote_port:
+      remote-port:
         description: "Remote: port"
         required: false
         default: "22"
         type: string
-      remote_user:
+      remote-user:
         description: "Remote: user"
         required: true
         type: string
-      remote_path:
+      remote-path:
         description: "Remote: root path"
         required: true
         type: string
-      transfer_files:
+      transfer-files:
         description: "Files to be transferred"
         required: true
         type: string
-      docker_command:
+      docker-command:
         description: "Docker Compose Command"
         required: false
         type: string
-      docker_registry:
+      docker-registry:
         description: "Docker Host (default: Docker Hub)"
         required: false
         type: string
-      docker_username:
+      docker-username:
         description: "Docker login: Username"
         required: false
         type: string
@@ -55,25 +55,25 @@ jobs:
         id: connect
         uses: draftm0de/github.scripts/.github/actions/ssh-connect@main
         with:
-          remote_host: ${{ inputs.remote_host }}
-          remote_port: ${{ inputs.remote_port }}
-          remote_user: ${{ inputs.remote_user }}
-          remote_ssh_key:  ${{ secrets.REMOTE_SSH_KEY }}
+          remote-host: ${{ inputs.remote-host }}
+          remote-port: ${{ inputs.remote-port }}
+          remote-user: ${{ inputs.remote-user }}
+          remote-ssh-key:  ${{ secrets.REMOTE_SSH_KEY }}
 
       - name: "Sync Deployment Files"
         uses: draftm0de/github.scripts/.github/actions/ssh-copy@main
         with:
-          files: ${{ inputs.transfer_files }}
-          remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
-          remote_path: ${{ inputs.remote_path }}
+          files: ${{ inputs.transfer-files }}
+          remote-ssh-chain: ${{ steps.connect.outputs.remote-ssh-chain }}
+          remote-path: ${{ inputs.remote-path }}
 
       - name: "Docker Compose"
-        if: ${{ inputs.docker_command }}
+        if: ${{ inputs.docker-command }}
         uses: draftm0de/github.scripts/.github/actions/ssh-docker-compose@main
         with:
-          command: ${{ inputs.docker_command }}
-          remote_ssh_chain: ${{ steps.connect.outputs.remote_ssh_chain }}
-          remote_path: ${{ inputs.remote_path }}
-          docker_registry: ${{ inputs.docker_registry }}
-          docker_username: ${{ inputs.docker_username }}
-          docker_token: ${{ secrets.DOCKER_TOKEN }}
+          command: ${{ inputs.docker-command }}
+          remote-ssh-chain: ${{ steps.connect.outputs.remote-ssh-chain }}
+          remote-path: ${{ inputs.remote-path }}
+          docker-registry: ${{ inputs.docker-registry }}
+          docker-username: ${{ inputs.docker-username }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}

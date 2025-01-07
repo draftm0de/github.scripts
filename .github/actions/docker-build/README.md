@@ -18,7 +18,7 @@ This GitHub Action builds Docker images from a specified context, supports advan
 | `context`         | Build context (e.g., directory to build)                | No       | `.`     |
 | `reproducible`    | Enable reproducible builds (true/false)                 | No       |         |
 | `options`         | Additional build options                                | No       |         |
-| `build_args_file` | File containing build arguments (`--build-arg`)         | No       |         |
+| `build-args-file` | File containing build arguments (`--build-arg`)         | No       |         |
 
 ## Outputs
 
@@ -56,5 +56,5 @@ jobs:
           context: ./docker
           reproducible: true
           options: --no-cache
-          build_args_file: build-args.txt
+          build-args-file: build-args.txt
 ```

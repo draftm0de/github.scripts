@@ -1,21 +1,21 @@
 name: "SSH Docker Login"
 description: "SSH Docker Login"
 inputs:
-  remote_ssh_chain:
+  remote-ssh-chain:
     description: "Remote ssh chain to remote server"
     required: true
-  remote_path:
+  remote-path:
     description: "Remote: root path"
     required: true
-  docker_registry:
-    description: "Docker Host (default: Docker Hub)"
-    required: false
-  docker_username:
+  docker-username:
     description: "Docker login: username"
     required: true
-  docker_token:
+  docker-token:
     description: "Docker login: token"
     required: true
+  docker-registry:
+    description: "Docker registry host (default: Docker Hub)"
+    required: false
 
 runs:
   using: "composite"
@@ -26,14 +26,14 @@ runs:
       run: |
         echo "::group::Preparing docker login..."
         
-        remote_path="${{ inputs.remote_path }}"
-        remote_ssh_chain="${{ inputs.remote_ssh_chain }}"
+        remote_path="${{ inputs.remote-path }}"
+        remote_ssh_chain="${{ inputs.remote-ssh-chain }}"
         
         # create local token file
         local_token_path="${HOME}/.docker"
         local_token_file="${local_token_path}/token"
         mkdir -p ${local_token_path}      
-        echo "${{ inputs.docker_token }}" > "${local_token_file}"
+        echo "${{ inputs.docker-token }}" > "${local_token_file}"
         echo "✅ stored token to local file"
         
         remote_token_file="${remote_path}/.secrets/token"
@@ -68,14 +68,14 @@ runs:
       run: |
         echo "::group::Login to docker..."
         
-        remote_ssh_chain="${{ inputs.remote_ssh_chain }}"
-        remote_path="${{ inputs.remote_path }}"
+        remote_ssh_chain="${{ inputs.remote-ssh-chain }}"
+        remote_path="${{ inputs.remote-path }}"
         remote_toke_file="${{ steps.prepare.outputs.remote_token_file }}"
-        docker_username="${{ inputs.docker_username }}"
+        docker_username="${{ inputs.docker-username }}"
         
         ssh "${remote_ssh_chain}" <<EOF
         cd "${remote_path}"
-        docker_registry="${{ inputs.docker_registry }}"
+        docker_registry="${{ inputs.docker-registry }}"
         if [ -n "${docker_registry}" ]; then
           echo "✅ use custom docker registry: ${docker_registry}"
           echo "::notice::use custom docker registry"

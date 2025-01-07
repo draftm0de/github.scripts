@@ -17,7 +17,7 @@ inputs:
   options:
     description: "Additional build options"
     required: false
-  build_args_file:
+  build-args-file:
     description: "--build-args from file"
     required: false
 outputs:
@@ -39,7 +39,7 @@ runs:
         
         build_options="${{ inputs.options }}"
         
-        build_args_file="${{ inputs.context }}/${{ inputs.build_args_file }}"
+        build_args_file="${{ inputs.context }}/${{ inputs.build-args-file }}"
         if [ -f "$build_args_file" ]; then
           echo "> build-args from file: $build_args_file"
           build_args=$(cat "$build_args_file" | awk -F "=" '{ print "--build-arg " $1"="$2;}' | xargs)

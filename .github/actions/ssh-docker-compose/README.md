@@ -13,11 +13,11 @@ This GitHub Action simplifies executing Docker Compose commands on a remote serv
 | Name               | Description                                      | Required | Default |
 |--------------------|--------------------------------------------------|----------|---------|
 | `command`          | Docker Compose command to execute                | Yes      |         |
-| `remote_ssh_chain` | SSH chain to the remote server (user@host:port)  | Yes      |         |
-| `remote_path`      | Root directory path on the remote server         | Yes      |         |
-| `docker_registry`  | To be used docker registry (default: Docker hub) | No       |         |
-| `docker_username`  | Docker registry username for authentication      | No       |         |
-| `docker_token`     | Docker registry token for authentication         | No       |         |
+| `remote-ssh-chain` | SSH chain to the remote server (user@host:port)  | Yes      |         |
+| `remote-path`      | Root directory path on the remote server         | Yes      |         |
+| `docker-registry`  | To be used docker registry (default: Docker hub) | No       |         |
+| `docker-username`  | Docker registry username for authentication      | No       |         |
+| `docker-token`     | Docker registry token for authentication         | No       |         |
 
 ## How It Works
 
@@ -38,10 +38,10 @@ jobs:
         uses: ./.github/actions/ssh-docker-compose@main
         with:
           command: up -d
-          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
-          remote_path: /remote/docker/path
-          docker_username: ${{ secrets.DOCKER_USERNAME }}
-          docker_token: ${{ secrets.DOCKER_TOKEN }}
+          remote-ssh-chain: ${{ secrets.SSH_CHAIN }}
+          remote-path: /remote/docker/path
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
 ```
 using `ghcr.io` as registry
 ```
@@ -53,9 +53,9 @@ jobs:
         uses: ./.github/actions/ssh-docker-compose@main
         with:
           command: up -d
-          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
-          remote_path: /remote/docker/path
-          docker_registry: ghcr.io          
-          docker_username: ${{ secrets.DOCKER_USERNAME }}
-          docker_token: ${{ secrets.DOCKER_TOKEN }}
+          remote-ssh-chain: ${{ secrets.SSH_CHAIN }}
+          remote-path: /remote/docker/path
+          docker-registry: ghcr.io          
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
 ```

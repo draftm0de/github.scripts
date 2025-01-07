@@ -4,19 +4,19 @@ inputs:
   command:
     description: "Docker compose options"
     required: true
-  remote_ssh_chain:
+  remote-ssh-chain:
     description: "Remote ssh chain to remote server"
     required: true
-  remote_path:
+  remote-path:
     description: "Remote: root path"
     required: true
-  docker_registry:
-    description: "Docker Host (default: Docker Hub)"
+  docker-registry:
+    description: "Docker registry host (default: Docker Hub)"
     required: false
-  docker_username:
+  docker-username:
     description: "Docker login: Username"
     required: false
-  docker_token:
+  docker-token:
     description: "Docker login: Token"
     required: false
 
@@ -24,21 +24,21 @@ runs:
   using: "composite"
   steps:
     - name: "Docker Login"
-      if: ${{ inputs.docker_username && inputs.docker_token }}
+      if: ${{ inputs.docker-username && inputs.docker-token }}
       uses: draftm0de/github.scripts/.github/actions/ssh-docker-login@main
       with:
-        remote_ssh_chain: ${{ inputs.remote_ssh_chain }}
-        remote_path: ${{ inputs.remote_path }}
-        docker_registry: ${{ inputs.docker_registry }}
-        docker_username: ${{ inputs.docker_username }}
-        docker_token: ${{ inputs.docker_token }}
+        remote-ssh-chain: ${{ inputs.remote-ssh-chain }}
+        remote-path: ${{ inputs.remote-path }}
+        docker-registry: ${{ inputs.docker-registry }}
+        docker-username: ${{ inputs.docker-username }}
+        docker-token: ${{ inputs.docker-token }}
 
     - name: "Run Docker Compose Command"
       shell: bash
       run: |
         echo "::group::Executing docker compose..."
-        path="${{ inputs.remote_path }}"
-        ssh_chain="${{ inputs.remote_ssh_chain }}"            
+        path="${{ inputs.remote-path }}"
+        ssh_chain="${{ inputs.remote-ssh-chain }}"            
         command="${{ inputs.command }}"
         echo "✅ docker compose $command"
         echo "::notice::docker compose ${command}"
@@ -51,7 +51,7 @@ runs:
         echo "::endgroup::" 
 
     - name: "Post: Docker Logout"
-      if: ${{ inputs.docker_username && inputs.docker_token }}
+      if: ${{ inputs.docker-username && inputs.docker-token }}
       shell: bash
       run: |
-        docker logout "${{ inputs.docker_registry }}"
+        docker logout "${{ inputs.docker-registry }}"

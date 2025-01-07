@@ -20,8 +20,8 @@ apt update && apt install rsync
 | Name               | Description                                                                                                               | Required | Default |
 |--------------------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|
 | `files`            | Files/directories to be transferred, separated by commas. Can specify custom target paths using `:` (e.g., `source:file`) | Yes      |         |
-| `remote_ssh_chain` | SSH chain to the remote server (user@host:port)                                                                           | Yes      |         |
-| `remote_path`      | Root directory path on the remote server                                                                                  | Yes      |         |
+| `remote-ssh-chain` | SSH chain to the remote server (user@host:port)                                                                           | Yes      |         |
+| `remote-path`      | Root directory path on the remote server                                                                                  | Yes      |         |
 
 ## How It Works
 
@@ -45,6 +45,6 @@ jobs:
         uses: ./
         with:
           files: file1.txt,file2.txt:/remote/target/path/file2.txt
-          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
-          remote_path: /remote/root/path
+          remote-ssh-chain: ${{ secrets.SSH_CHAIN }}
+          remote-path: /remote/root/path
 ```

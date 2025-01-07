@@ -10,11 +10,12 @@ This reusable GitHub Actions workflow streamlines the process of pushing Docker 
 
 ## Inputs
 
-| Name       | Description                                        | Required | Default |
-|------------|----------------------------------------------------|----------|---------|
-| `image`    | Source Docker image name to push                   | No       |         |
-| `artifact` | Artifact name to load the Docker source image from | No       |         |
-| `target`   | Target Docker image name for tagging               | No       |         |
+| Name              | Description                                        | Required | Default |
+|-------------------|----------------------------------------------------|----------|---------|
+| `image`           | Source Docker image name to push                   | No       |         |
+| `artifact`        | Artifact name to load the Docker source image from | No       |         |
+| `target`          | Target Docker image name for tagging               | No       |         |
+| `docker-registry` | To be used docker registry (default: Docker hub)   | No       |         |
 
 ## Secrets
 
@@ -48,6 +49,15 @@ jobs:
     with:
       image: myrepo/myimage:1.0
       target: myrepo/myimage:latest
+    secrets:
+      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      
+  push-docker-image-ghci-io:
+    uses: ./.github/workflows/docker-push.yml
+    with:
+      image: myrepo/myimage:1.0
+      target: myrepo/myimage:latest
+      docker-registry: ghci.io
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 ```

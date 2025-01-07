@@ -10,12 +10,13 @@ This GitHub Action allows you to push Docker images to a registry. It supports l
 
 ## Inputs
 
-| Name                  | Description                          | Required | Default |
-|-----------------------|--------------------------------------|----------|---------|
-| `image`               | Docker image name to push            | No       |         |
-| `artifact`            | Load the image from an artifact      | No       |         |
-| `target`              | Target Docker image name for tagging | No       |         |
-| `secret-docker-token` | Docker API token for authentication  | Yes      |         |
+| Name                  | Description                                      | Required | Default |
+|-----------------------|--------------------------------------------------|----------|---------|
+| `image`               | Docker image name to push                        | No       |         |
+| `artifact`            | Load the image from an artifact                  | No       |         |
+| `target`              | Target Docker image name for tagging             | No       |         |
+| `docker-registry`     | To be used docker registry (default: Docker hub) | No       |         |
+| `secret-docker-token` | Docker API token for authentication              | Yes      |         |
 
 ## How It Works
 
@@ -25,10 +26,10 @@ This GitHub Action allows you to push Docker images to a registry. It supports l
 
 2. **Prepare Push Arguments**:
    - Verifies the provided image or artifact is valid and accessible.
-     - Extracts the Docker username from the image name.
+   - Extracts the Docker username from the image name.
 
-3. **Login to Docker Hub**:
-   - Logs into Docker Hub using the provided username and API token.
+3. **Login to Docker Registry**:
+   - Logs into Docker registry using the provided username and API token.
 
 4. **Push Docker Image**:
     - Optionally tags the image with the name provided in the `target` input.
@@ -45,6 +46,21 @@ jobs:
         uses: ./
         with:
           image: myrepo/myimage:1.0
+          secret-docker-token: ${{ secrets.DOCKER_TOKEN }}
+          target: myrepo/myimage:latest
+```
+
+using `ghci.io` as docker registry.
+```yaml
+jobs:
+  push-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push Docker Image
+        uses: ./
+        with:
+          image: myrepo/myimage:1.0
+          docker-registry: ghci.io
           secret-docker-token: ${{ secrets.DOCKER_TOKEN }}
           target: myrepo/myimage:latest
 ```

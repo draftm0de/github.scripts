@@ -10,6 +10,9 @@ inputs:
   target:
     description: "Target docker image name"
     required: false
+  docker-registry:
+    description: "Docker registry host (default: Docker hub)"
+    required: false
   secret-docker-token:
     description: "Docker API Token"
     required: true
@@ -75,6 +78,7 @@ runs:
     - name: "Login To Docker Hub"
       uses: docker/login-action@v3
       with:
+        registry: ${{ inputs.docker-registry }}
         username: ${{ steps.arguments.outputs.docker_username }}
         password: ${{ inputs.secret-docker-token }}
 

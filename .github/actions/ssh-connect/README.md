@@ -12,17 +12,17 @@ This GitHub Action simplifies establishing an SSH connection by preparing an SSH
 
 | Name             | Description              | Required | Default |
 |------------------|--------------------------|----------|---------|
-| `remote_host`    | Remote host address      | Yes      |         |
-| `remote_port`    | Remote port (optional)   | No       | 22      |
-| `remote_user`    | Remote username          | Yes      |         |
-| `remote_ssh_key` | Remote SSH private key   | Yes      |         |
+| `remote-host`    | Remote host address      | Yes      |         |
+| `remote-port`    | Remote port (optional)   | No       | 22      |
+| `remote-user`    | Remote username          | Yes      |         |
+| `remote-ssh-key` | Remote SSH private key   | Yes      |         |
 
 ## Outputs
 
-| Name                | Description                        |
-|---------------------|------------------------------------|
-| `remote_server`     | The remote server's address        |
-| `remote_ssh_chain`  | SSH chain to the remote server     |
+| Name               | Description                        |
+|--------------------|------------------------------------|
+| `remote-server`    | The remote server's address        |
+| `remote-ssh-chain` | SSH chain to the remote server     |
 
 
 ## How It Works
@@ -43,8 +43,8 @@ jobs:
       - name: Build SSH Connection
         uses: ./
         with:
-          remote_host: example.com
-          remote_port: 2222
-          remote_user: ubuntu
-          remote_ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote-host: example.com
+          remote-port: 2222
+          remote-user: ubuntu
+          remote-ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 ```

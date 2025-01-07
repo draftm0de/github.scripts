@@ -12,10 +12,11 @@ This GitHub Action facilitates secure Docker login on a remote server over SSH, 
 
 | Name               | Description                                     | Required | Default |
 |--------------------|-------------------------------------------------|----------|---------|
-| `remote_ssh_chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
-| `remote_path`      | Root directory path on the remote server        | Yes      |         |
-| `docker_username`  | Docker Hub username                             | Yes      |         |
-| `docker_token`     | Docker Hub token                                | Yes      |         |
+| `remote-ssh-chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
+| `remote-path`      | Root directory path on the remote server        | Yes      |         |
+| `docker-username`  | Docker registry username                        | Yes      |         |
+| `docker-token`     | Docker registry token                           | Yes      |         |
+| `docker-registry`  | Docker registry (default: Docker hub)           | No       |         |
 
 ## How It Works
 
@@ -35,10 +36,10 @@ jobs:
       - name: Perform Docker Login on Remote
         uses: ./.github/actions/ssh-docker-login@main
         with:
-          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
-          remote_path: /remote/docker/path
-          docker_username: ${{ secrets.DOCKER_USERNAME }}
-          docker_token: ${{ secrets.DOCKER_TOKEN }}
+          remote-ssh-chain: ${{ secrets.SSH_CHAIN }}
+          remote-path: /remote/docker/path
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
 ```
 using `ghcr.io` as registry
 ```
@@ -49,9 +50,9 @@ jobs:
       - name: Perform Docker Login on Remote
         uses: ./.github/actions/ssh-docker-login@main
         with:
-          remote_ssh_chain: ${{ secrets.SSH_CHAIN }}
-          remote_path: /remote/docker/path
-          docker_registry: ghcr.io
-          docker_username: ${{ secrets.DOCKER_USERNAME }}
-          docker_token: ${{ secrets.DOCKER_TOKEN }}
+          remote-ssh-chain: ${{ secrets.SSH_CHAIN }}
+          remote-path: /remote/docker/path
+          docker-registry: ghcr.io
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
 ```
