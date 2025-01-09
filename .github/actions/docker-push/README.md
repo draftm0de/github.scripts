@@ -10,13 +10,14 @@ This GitHub Action allows you to push Docker images to a registry. It supports l
 
 ## Inputs
 
-| Name                  | Description                                      | Required | Default |
-|-----------------------|--------------------------------------------------|----------|---------|
-| `image`               | Docker image name to push                        | No       |         |
-| `artifact`            | Load the image from an artifact                  | No       |         |
-| `target`              | Target Docker image name for tagging             | No       |         |
-| `docker-registry`     | To be used docker registry (default: Docker hub) | No       |         |
-| `secret-docker-token` | Docker API token for authentication              | Yes      |         |
+| Name                  | Description                                 | Required | Default |
+|-----------------------|---------------------------------------------|----------|---------|
+| `image`               | Docker image name to push                   | No       |         |
+| `artifact`            | Load the image from an artifact             | No       |         |
+| `target`              | Target Docker image name for tagging        | No       |         |
+| `docker-username`     | Docker registry username for authentication | No       |         |
+| `docker-registry`     | Docker registry (default: Docker hub)       | No       |         |
+| `secret-docker-token` | Docker API token for authentication         | Yes      |         |
 
 ## How It Works
 

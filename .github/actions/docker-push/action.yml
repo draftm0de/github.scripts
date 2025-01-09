@@ -13,6 +13,9 @@ inputs:
   docker-registry:
     description: "Docker registry host (default: Docker hub)"
     required: false
+  docker-username:
+    description: "Docker registry username"
+    required: false
   secret-docker-token:
     description: "Docker API Token"
     required: true
@@ -62,14 +65,17 @@ runs:
           exit 1
         fi
         
-        # extract docker-username
-        docker_username="${image%%/*}"
-        if [ "${image}" = "${docker_username}" ]; then
-          echo "::error::Could not extract docker-username from $image"
-          exit 1
-        else
-          echo "> docker-username: $docker_username"
-        fi 
+        docker_username="${{ inputs.docker-username }}"
+        # extract docker-username        
+        if [ -z "${docker_username}" ]; then        
+          docker_username="${image%%/*}"
+          if [ "${image}" = "${docker_username}" ]; then
+            echo "::error::Could not extract docker-username from $image"
+            exit 1
+          else
+            echo "> docker-username: $docker_username"
+          fi
+        fi
         
         echo "::endgroup::"
         echo "image=$image" >> $GITHUB_OUTPUT

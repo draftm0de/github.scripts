@@ -15,7 +15,8 @@ This reusable GitHub Actions workflow streamlines the process of pushing Docker 
 | `image`           | Source Docker image name to push                   | No       |         |
 | `artifact`        | Artifact name to load the Docker source image from | No       |         |
 | `target`          | Target Docker image name for tagging               | No       |         |
-| `docker-registry` | To be used docker registry (default: Docker hub)   | No       |         |
+| `docker-username` | Docker registry username for authentication        | No       |         |
+| `docker-registry` | Docker registry (default: Docker hub)              | No       |         |
 
 ## Secrets
 

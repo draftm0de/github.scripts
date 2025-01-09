@@ -15,6 +15,10 @@ on:
         description: "Target docker image name (not given: identically to source)"
         required: false
         type: string
+      docker-username:
+        description: "Docker Registry: username"
+        required: false
+        type: string
       docker-registry:
         description: "Docker Registry (default: Docker Hub)"
         required: false
@@ -49,5 +53,6 @@ jobs:
           image: ${{ inputs.image }}
           artifact: ${{ inputs.artifact }}
           target: ${{ inputs.target }}
+          docker-username: ${{ inputs.docker-username }}
           docker-registry: ${{ inputs.docker-registry }}
           secret-docker-token: ${{ secrets.DOCKER_TOKEN }}

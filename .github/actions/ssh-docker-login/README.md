@@ -14,7 +14,7 @@ This GitHub Action facilitates secure Docker login on a remote server over SSH, 
 |--------------------|-------------------------------------------------|----------|---------|
 | `remote-ssh-chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
 | `remote-path`      | Root directory path on the remote server        | Yes      |         |
-| `docker-username`  | Docker registry username                        | Yes      |         |
+| `docker-username`  | Docker registry username for authentication     | Yes      |         |
 | `docker-token`     | Docker registry token                           | Yes      |         |
 | `docker-registry`  | Docker registry (default: Docker hub)           | No       |         |
 

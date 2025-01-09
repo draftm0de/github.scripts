@@ -10,14 +10,14 @@ This GitHub Action simplifies executing Docker Compose commands on a remote serv
 
 ## Inputs
 
-| Name               | Description                                      | Required | Default |
-|--------------------|--------------------------------------------------|----------|---------|
-| `command`          | Docker Compose command to execute                | Yes      |         |
-| `remote-ssh-chain` | SSH chain to the remote server (user@host:port)  | Yes      |         |
-| `remote-path`      | Root directory path on the remote server         | Yes      |         |
-| `docker-registry`  | To be used docker registry (default: Docker hub) | No       |         |
-| `docker-username`  | Docker registry username for authentication      | No       |         |
-| `docker-token`     | Docker registry token for authentication         | No       |         |
+| Name               | Description                                     | Required | Default |
+|--------------------|-------------------------------------------------|----------|---------|
+| `command`          | Docker Compose command to execute               | Yes      |         |
+| `remote-ssh-chain` | SSH chain to the remote server (user@host:port) | Yes      |         |
+| `remote-path`      | Root directory path on the remote server        | Yes      |         |
+| `docker-registry`  | Docker registry (default: Docker hub)           | No       |         |
+| `docker-username`  | Docker registry username for authentication     | No       |         |
+| `docker-token`     | Docker registry token for authentication        | No       |         |
 
 ## How It Works
 
