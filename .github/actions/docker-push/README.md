@@ -53,6 +53,10 @@ permissions:
   contents: write
   packages: write
 ```
+#### How to get/see you built images
+1. Login to your GitHub Repository
+2. Got to packages section<br>
+`https://github.com/{user}?tab=packages`
 
 ## Usage Example
 
