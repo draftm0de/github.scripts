@@ -44,6 +44,15 @@ For workflows in an organization repository, you may need to explicitly enable t
 2. Under the **Workflow permissions** section:
    - Select **Read and write permissions**.
    - Enable **Allow GitHub Actions to create and approve pull requests** if necessary.
+#### Update Workflow Permissions
+By default, the GITHUB_TOKEN provided by GitHub Actions has limited permissions. You need to explicitly grant it permissions to packages in your workflow.
+
+Add the following under your workflow’s top-level permissions key:
+```
+permissions:
+  contents: write
+  packages: write
+```
 
 ## Usage Example
 
@@ -62,6 +71,10 @@ jobs:
 
 using `ghci.io` as docker registry.
 ```yaml
+permissions:
+   contents: write
+   packages: write
+   
 jobs:
   push-docker-image:
     runs-on: ubuntu-latest
