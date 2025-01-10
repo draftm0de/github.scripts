@@ -36,6 +36,15 @@ This GitHub Action allows you to push Docker images to a registry. It supports l
     - Optionally tags the image with the name provided in the `target` input.
     - Pushes the image to the Docker registry.
 
+## Registries
+### registry: ghcr.io 
+#### Enable `GITHUB_TOKEN` for Organization Repositories
+For workflows in an organization repository, you may need to explicitly enable the GITHUB_TOKEN for package publishing:
+1. Go to your repository's **Settings → Actions → General**.
+2. Under the **Workflow permissions** section:
+   - Select **Read and write permissions**.
+   - Enable **Allow GitHub Actions to create and approve pull requests** if necessary.
+
 ## Usage Example
 
 ```yaml
@@ -62,6 +71,6 @@ jobs:
         with:
           image: myrepo/myimage:1.0
           docker-registry: ghci.io
-          secret-docker-token: ${{ secrets.DOCKER_TOKEN }}
+          secret-docker-token: ${{ secrets.GITHUB_TOKEN }}
           target: myrepo/myimage:latest
 ```

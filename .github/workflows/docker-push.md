@@ -37,13 +37,6 @@ This reusable GitHub Actions workflow streamlines the process of pushing Docker 
 ## Usage Example
 
 ```
-name: Push Docker Image Example
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   push-docker-image:
     uses: ./.github/workflows/docker-push.yml
@@ -52,7 +45,9 @@ jobs:
       target: myrepo/myimage:latest
     secrets:
       DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-      
+```
+using `ghci.io` as docker registry. ([read more](../actions/docker-push/README.md#registry-ghcrio-))
+```
   push-docker-image-ghci-io:
     uses: ./.github/workflows/docker-push.yml
     with:
@@ -60,5 +55,5 @@ jobs:
       target: myrepo/myimage:latest
       docker-registry: ghci.io
     secrets:
-      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
